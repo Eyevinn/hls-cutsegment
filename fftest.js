@@ -226,7 +226,7 @@ app.get('/docut', function (req,res)
 			var cut2 = pth + fn + "_2" + ext;
 			StitchBack(old_fn,new_fn,clpp,cut1,cut2,ad,0,function(ok,str)
 			{
-				var ff = new ffmpeg(fn);
+				var ff = new ffmpeg(pth+fn+ext);
 				ff.then(function (video) {
 					video
 					// ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
