@@ -1,0 +1,23 @@
+
+div
+  h3 Select Cutpoint
+  div
+    p Original File : #{ogig_file}
+    p Manifest Duration : #{duration}
+    form(action="docut")
+      input(type="hidden",name="oldfile",value=ogig_file)
+      br
+      label(for="newfile") New Manifest:
+      input(type="text",name="newfile",value=new_file)
+      br
+      br
+      label(for="clippoint") Clip Point:
+      input(type="text",name="clippoint",value=(duration/2.0))
+      br
+      br
+      label(for="ad") Advert file:
+      input(type="file",name="ad")
+      br
+      br
+      input(type="submit")
+
