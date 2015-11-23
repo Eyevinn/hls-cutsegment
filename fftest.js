@@ -134,6 +134,8 @@ function StitchBack(
 				console.log(err);
 				callback(false,"");
 			} else {
+				console.log("wrote new manifest ok");
+				console.log("---------------------");
 				callback(true,str);
 			}
 		});
@@ -208,6 +210,7 @@ app.get('/cutpoint', function (req,res)
 
 app.get('/docut', function (req,res)
 {
+	console.log(__dirname);
 
 	var path = url.parse(req.url).pathname ;
 	var params = qstring.parse(url.parse(req.url).query);
@@ -224,9 +227,17 @@ app.get('/docut', function (req,res)
 		{
 			var cut1 = pth + fn + "_1" + ext;
 			var cut2 = pth + fn + "_2" + ext;
+			console.log("---------------------");
+			console.log(cut1);
+			console.log(cut2);
+			console.log("---------------------");
 			StitchBack(old_fn,new_fn,clpp,cut1,cut2,ad,0,function(ok,str)
 			{
-				var ff = new ffmpeg(pth+fn+ext);
+				var ff_fn = __dirname + "\\" + fn + ext;
+				console.log("---------------------");
+				console.log(ff_fn);
+				console.log("---------------------");
+				var ff = new ffmpeg(ff_fn);
 				ff.then(function (video) {
 					video
 					// ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
@@ -283,7 +294,7 @@ app.get('*', function (req, res)
 
 });
 
-var server = app.listen(80, function ()
+var server = app.listen(8080, function ()
 {
 	console.log('ffmpeg test app listening at http://%s:%s', 'localhost', server.address().port);
 });
