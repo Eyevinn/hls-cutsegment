@@ -132,7 +132,7 @@ app.get('/docut', function (req,res)
 			console.log(cut1);
 			console.log(cut2);
 			console.log("---------------------");
-			cutter.stitchBack(old_fn,new_fn,clpp,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
+			cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
             
 		});
 	});
