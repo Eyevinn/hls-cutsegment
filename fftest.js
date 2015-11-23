@@ -132,34 +132,8 @@ app.get('/docut', function (req,res)
 			console.log(cut1);
 			console.log(cut2);
 			console.log("---------------------");
-			cutter.stitchBack(old_fn,new_fn,clpp,cut1,cut2,ad,0,function(ok,str)
-			{
-				var ff_fn = __dirname + "\\" + fn + ext;
-				console.log("---------------------");
-				console.log(ff_fn);
-				console.log("---------------------");
-				var ff = new ffmpeg(ff_fn);
-				ff.then(function (video) {
-					video
-					// ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
-					.addCommand('-ss', '0', '-to', clpp, '-c', 'copy' )
-					.save(cut1, function (error, file) {
-						if (!error)
-						{
-							ff.then(function (video) {
-								video
-								.addCommand('-ss', clpp, '-to', dur, '-c', 'copy' )
-								.save(cut2, function (error, file) {
-									if (!error)
-									{
-										res.send( head() + "it all woked" + tail() );
-									} else { res.send( head() + "part 2 error" + tail() ); }
-								});
-							});
-						} else { res.send( head() + "part 1 error" + tail() ); }
-					});
-				});
-			});
+			cutter.stitchBack(old_fn,new_fn,clpp,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
+            
 		});
 	});
 });
