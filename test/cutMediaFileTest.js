@@ -8,4 +8,4 @@ function callback(err) {
     console.log(err);
     console.log("Done!");
 }
-cutter.cutMediaFile(mediaFile, whereToCut, cut1, cut2, callback);
+cutter.cutMediaFile(callback)(null, mediaFile, whereToCut, cut1, cut2);

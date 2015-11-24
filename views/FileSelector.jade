@@ -1,6 +1,6 @@
-
 div
-  h3 Transkoderingsverktyg
-  form(action="cutpoint")
-    input(type="file",name="file")
-    input(type="submit")
+  h3 HSL-strömmar
+  div#streams
+    -each file in files
+       div.stream
+         a(href ="/cutpoint?media=#{file}") #{file}

@@ -8,13 +8,17 @@ var url         = require( 'url'            );
 var qstring     = require( 'querystring'    );
 var cutter      = require( './lib/clipFile' );
 var ffprobe     = require( 'node-ffprobe'   );
+var p           = require( 'path'           );
 
 var parser;
 var file;
+var publicDir = p.join(__dirname, "public");
+var streamDir = p.join(publicDir, "streams");
+var adDir = p.join(publicDir, "ads");
 
 var app = express();
 
-app.use(express.static('public'));
+app.use(express.static(publicDir));
 
 function head()
 {
@@ -53,33 +57,17 @@ app.get('/', function (req, res)
 	var path = url.parse(req.url).pathname ;
 	var params = qstring.parse(url.parse(req.url).query);
 
-	res.render('FileSelector', { path:path, params:params });
+	fs.readdir(streamDir, function(err, data){
+		res.render('FileSelector', {"files": data});
+	});
 
 });
 
 function cut_file_name( filename, callback )
 {
-	var i1 = filename.lastIndexOf("/");
-	var i2 = filename.lastIndexOf("\\");
-	var i4 = Math.max(i1,i2);
-	var path,rest;
-	if(i4<0) {
-		path = "";
-		rest = filename;
-	} else {
-		path = filename.substr(0,i4);
-		rest = filename.substr(i4);
-	}
-	var i3 = rest.lastIndexOf(".");
-	var fn, ext;
-	if(i3<0)
-	{
-		fn = rest;
-		ext = "";
-	} else {
-		fn = filename.substr(0,i3);
-		ext = filename.substr(i3);
-	}
+	var path = p.dirname(filename);
+	var ext = p.extname(filename);
+	var fn = p.basename(filename, ext);
 	callback( path, fn, ext );
 }
 
@@ -89,13 +77,16 @@ app.get('/cutpoint', function (req,res)
 	var path = url.parse(req.url).pathname ;
 	var params = qstring.parse(url.parse(req.url).query);
 
-	var filename = params['file'];
+	var media = params.media;
+	var filename = fs.readdirSync(p.join(streamDir,media)).filter(function(f) {return f && f.match(/.*m3u8$/);})[0] ;
+	filename = p.join(streamDir, media, filename);
+
 
 	ManifestDuration(filename,function (total) {
 
 		cut_file_name( filename, function( pth, fn, ext ) {
 
-			var newfile = pth + fn + "_new" + ext;
+			var newfile = p.join(pth,fn + "_new" + ext);
 
 			res.render(
 				'Parameters',
@@ -118,29 +109,29 @@ app.get('/docut', function (req,res)
 	var params = qstring.parse(url.parse(req.url).query);
 
 	var old_fn = params['oldfile'];
+	var currentStreamDir = p.dirname(old_fn);
 	var new_fn = params['newfile'];
 	var clpp = params['clippoint'];
-	var ad = params['ad'];
+	//var ad = params['ad'];
+	var ad = "public/ads/ad.ts";
 	var dur = params['dur'];
 
 	cutter.clipFile( old_fn, clpp, function(ftc,wtc)
 	{
-		cut_file_name(ftc, function( pth, fn, ext )
-		{
-			var cut1 = pth + fn + "_1" + ext;
-			var cut2 = pth + fn + "_2" + ext;
-			
-			//var addur  = 10.0;
+		ftc = p.join(currentStreamDir,ftc);
+		var cut1 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_1" + p.extname(ftc));
+		var cut2 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_2" + p.extname(ftc));
 
-			ffprobe( ad, function(err, probeData) {
-				var addur = probeData.format.duration;
-				console.log(addur);
-				cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,addur, cutter.cutMediaFile(res)); 
-			});
+		//var addur  = 10.0;
 
-			//cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
-            
+		ffprobe( ad, function(err, probeData) {
+			var addur = probeData.format.duration;
+			console.log(addur);
+			cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,addur, cutter.cutMediaFile(res)); 
 		});
+
+		//cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
+            
 	});
 });
 
