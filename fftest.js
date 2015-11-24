@@ -1,12 +1,13 @@
 
-var http        = require( 'http'        );
-var m3u8        = require( 'm3u8'        );
-var fs          = require( 'fs'          );
-var ffmpeg      = require( 'ffmpeg'      );
-var express     = require( 'express'     );
-var url         = require( 'url'         );
-var qstring     = require( 'querystring' );
-var cutter      = require( './lib/clipFile');
+var http        = require( 'http'           );
+var m3u8        = require( 'm3u8'           );
+var fs          = require( 'fs'             );
+var ffmpeg      = require( 'ffmpeg'         );
+var express     = require( 'express'        );
+var url         = require( 'url'            );
+var qstring     = require( 'querystring'    );
+var cutter      = require( './lib/clipFile' );
+var ffprobe     = require( 'node-ffprobe'   );
 
 var parser;
 var file;
@@ -128,11 +129,16 @@ app.get('/docut', function (req,res)
 		{
 			var cut1 = pth + fn + "_1" + ext;
 			var cut2 = pth + fn + "_2" + ext;
-			console.log("---------------------");
-			console.log(cut1);
-			console.log(cut2);
-			console.log("---------------------");
-			cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
+			
+			//var addur  = 10.0;
+
+			ffprobe( ad, function(err, probeData) {
+				var addur = probeData.format.duration;
+				console.log(addur);
+				cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,addur, cutter.cutMediaFile(res)); 
+			});
+
+			//cutter.stitchBack(old_fn,new_fn,clpp,ftc,cut1,cut2,ad,0, cutter.cutMediaFile(res)); 
             
 		});
 	});
