@@ -53,14 +53,6 @@ app.get('/', function (req, res)
 
 });
 
-function cut_file_name( filename, callback )
-{
-	var path = p.dirname(filename);
-	var ext = p.extname(filename);
-	var fn = p.basename(filename, ext);
-	callback( path, fn, ext );
-}
-
 app.get('/cutpoint', function (req,res)
 {
 
@@ -68,26 +60,17 @@ app.get('/cutpoint', function (req,res)
 	var params = qstring.parse(url.parse(req.url).query);
 
 	var media = params.media;
-	var filename = fs.readdirSync(p.join(streamDir,media)).filter(function(f) {return f && f.match(/.*m3u8$/);})[0] ;
-	filename = p.join(streamDir, media, filename);
-
+	filename = p.join(streamDir, media, media + ".m3u8");
 
 	manifestDuration(filename,function (total) {
-
-		cut_file_name( filename, function( pth, fn, ext ) {
-
-			var newfile = p.join(pth,fn + "_new" + ext);
-
-			res.render(
-				'Parameters',
-				{ ogig_file : filename,
-				  new_file : newfile,
-				  duration : total } );
-
-		} );
-
+		var ext = p.extname(filename);
+		var newfile = p.join(p.dirname(filename), p.basename(filename, ext) + "_new" + ext);
+		res.render(
+			'Parameters',
+			{ ogig_file : filename,
+				new_file : newfile,
+			duration : total } );
 	} );
-
 });
 
 
