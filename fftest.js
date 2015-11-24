@@ -20,16 +20,6 @@ var app = express();
 
 app.use(express.static(publicDir));
 
-function head()
-{
-	return '<html><head><meta charset=\'utf-8\'><title>ffmpeg Tester</title></head><body>' ;
-}
-
-function tail()
-{
-	return '</body></html>' ;
-}
-
 function ManifestDuration(manifestfile,callback)
 {
 	parser = m3u8.createStream();
@@ -140,31 +130,6 @@ function list_param_page( connection, args, callback )
 {
 	callback(str);
 }
-
-app.get('*', function (req, res)
-{
-	var path = url.parse(req.url).pathname ;
-	var params = qstring.parse(url.parse(req.url).query);
-
-	var str = "";
-	str += '<h1> List Params for "';
-	str += path + '" </h1>' ;
-	str += '<hr>' ;
-	str += '<table border=1 cellpadding=4>';
-	str += '<tr><th>Param</th><th>Value</th></tr>';
-	for( var key in params  )
-	{
-		str += '<tr><td>';
-		str += key;
-		str += '</td><td>';
-		str += params[key];
-		str += '</td></tr>';
-	}
-	str += "</table>";
-
-	res.send( head() + str + tail() );
-
-});
 
 var server = app.listen(8080, function ()
 {
