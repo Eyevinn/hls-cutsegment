@@ -64,10 +64,15 @@ app.get('/cutpoint', function (req,res)
 
 	manifestDuration(filename,function (total) {
 		var ext = p.extname(filename);
-		var newfile = p.join(p.dirname(filename), p.basename(filename, ext) + "_new" + ext);
+		var directory = p.dirname(filename);
+		var revisionFile = p.join(directory,"revision");
+		var revision = fs.readFileSync(revisionFile, "utf8");
+		revision = Number(revision) + 1;
+		fs.writeFileSync(revisionFile, revision);
+		var newfile = p.join(p.basename(filename, ext) + "_" + revision + ext);
 		res.render(
 			'Parameters',
-			{ ogig_file : filename,
+			{ orig_file : filename,
 				new_file : newfile,
 			duration : total } );
 	} );
@@ -83,7 +88,8 @@ app.get('/docut', function (req,res)
 
 	var old_fn = params['oldfile'];
 	var currentStreamDir = p.dirname(old_fn);
-	var new_fn = params['newfile'];
+	var new_fn = p.join(currentStreamDir, params['newfile']);
+	var revision = params.newfile.match(/.*_(\d+)\.m3u8$/)[1];
 	var clpp = params['clippoint'];
 	//var ad = params['ad'];
 	var ad = "public/ads/ad.ts";
@@ -92,8 +98,8 @@ app.get('/docut', function (req,res)
 	cutter.clipFile( old_fn, clpp, function(ftc,wtc)
 	{
 		ftc = p.join(currentStreamDir,ftc);
-		var cut1 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_1" + p.extname(ftc));
-		var cut2 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_2" + p.extname(ftc));
+		var cut1 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_" + revision + "a" + p.extname(ftc));
+		var cut2 = p.join(currentStreamDir, p.basename(ftc,p.extname(ftc)) + "_" + revision + "b" + p.extname(ftc));
 
 		//var addur  = 10.0;
 

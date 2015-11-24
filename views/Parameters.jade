@@ -2,10 +2,10 @@
 div
   h3 Select Cutpoint
   div
-    p Original File : #{ogig_file}
-    p Manifest Duration : #{duration}
+    p Original File : #{orig_file}
+    p Stream Duration : #{duration}
     form(action="docut")
-      input(type="hidden",name="oldfile",value=ogig_file)
+      input(type="hidden",name="oldfile",value=orig_file)
       br
       label(for="newfile") New Manifest:
       input(type="text",name="newfile",value=new_file)
