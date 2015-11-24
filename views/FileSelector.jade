@@ -3,8 +3,10 @@ div
   div#streams
     -each stream in files
        div.stream
-         a(href="/")
-           img(src ="/img/Octagon_delete.svg" height ="20px")
-         a(href ="/cutpoint?media=#{stream}")
-           img(src ="/img/Dollar_Sign.svg" height ="20px")
-         a(href ="/streams/#{stream}/#{stream}.m3u8") #{stream}
+         a(href ="/streams/#{stream.directory}/#{stream.file}.m3u8") #{stream.file}
+         if stream.orig
+           a(href ="/cutpoint?media=#{stream.file}")
+             img(src ="/img/Dollar_Sign.svg" height ="20px")
+         else
+           a(href="/")
+             img(src ="/img/Octagon_delete.svg" height ="20px")

@@ -9,6 +9,7 @@ var qstring     = require( 'querystring'    );
 var cutter      = require( './lib/clipFile' );
 var ffprobe     = require( 'node-ffprobe'   );
 var p           = require( 'path'           );
+var glob        = require( 'glob'           );
 
 var parser;
 var file;
@@ -47,7 +48,10 @@ app.get('/', function (req, res)
 	var path = url.parse(req.url).pathname ;
 	var params = qstring.parse(url.parse(req.url).query);
 
-	fs.readdir(streamDir, function(err, data){
+	glob(streamDir + "/*/*m3u8", function(err, data) {
+		data = data.map(function(f){ return { directory: p.basename(p.dirname(f)),
+			file: p.basename(f,'.m3u8'),
+			 orig: p.basename(p.dirname(f)) == p.basename(f,'.m3u8') ? true : false };});
 		res.render('FileSelector', {"files": data});
 	});
 

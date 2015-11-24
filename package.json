@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "^4.13.3",
     "ffmpeg": "^0.0.4",
+    "glob": "^6.0.1",
     "jade": "^1.11.0",
     "m3u8": "^0.0.6",
     "node-ffprobe": "^1.2.2"
