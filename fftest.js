@@ -20,7 +20,7 @@ var app = express();
 
 app.use(express.static(publicDir));
 
-function ManifestDuration(manifestfile,callback)
+function manifestDuration(manifestfile,callback)
 {
 	parser = m3u8.createStream();
 	file   = fs.createReadStream(manifestfile);
@@ -72,7 +72,7 @@ app.get('/cutpoint', function (req,res)
 	filename = p.join(streamDir, media, filename);
 
 
-	ManifestDuration(filename,function (total) {
+	manifestDuration(filename,function (total) {
 
 		cut_file_name( filename, function( pth, fn, ext ) {
 
