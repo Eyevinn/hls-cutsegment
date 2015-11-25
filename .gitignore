@@ -6,7 +6,8 @@ logs
 pids
 *.pid
 *.seed
-public/streams/testbild/revision
+public/streams
+public/ads
 
 # directory full of .ts files
 sample
