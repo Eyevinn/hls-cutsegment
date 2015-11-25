@@ -6,8 +6,10 @@ logs
 pids
 *.pid
 *.seed
-public/streams
-public/ads
+public/streams/*
+!public/streams/info.txt
+public/ads/*
+!public/ads/info.txt
 
 # directory full of .ts files
 sample
