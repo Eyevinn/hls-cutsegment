@@ -70,8 +70,13 @@ app.get('/cutpoint', function (req,res)
 		var ext = p.extname(filename);
 		var directory = p.dirname(filename);
 		var revisionFile = p.join(directory,"revision");
-		var revision = fs.readFileSync(revisionFile, "utf8");
-		revision = Number(revision) + 1;
+		var revision = 0;
+		try {
+			revision = Number(fs.readFileSync(revisionFile, "utf8"));
+		} catch(err) {
+			console.err("No revision file");
+		}
+		revision = revision + 1;
 		fs.writeFileSync(revisionFile, revision);
 		var newfile = p.join(p.basename(filename, ext) + "_" + revision + ext);
 		res.render(
@@ -96,7 +101,7 @@ app.get('/docut', function (req,res)
 	var revision = params.newfile.match(/.*_(\d+)\.m3u8$/)[1];
 	var clpp = params['clippoint'];
 	//var ad = params['ad'];
-	var ad = "public/ads/ad.ts";
+	var ad = "public/ads/BigBuckAd4.ts";
 	var dur = params['dur'];
 
 	cutter.clipFile( old_fn, clpp, function(ftc,wtc)

@@ -8,15 +8,12 @@ div
       input(type="hidden",name="oldfile",value=orig_file)
       br
       label(for="newfile") New Manifest:
-      input(type="text",name="newfile",value=new_file)
+      input(type="text",name="newfile",value=new_file, readonly)
       br
       br
       label(for="clippoint") Clip Point:
       input(type="text",name="clippoint",value=(duration/2.0))
       br
-      br
-      label(for="ad") Ad file (Currently read-only):
-      input(type="text",name="ad",value=("ad.ts"))
       br
       br
       input(type="submit")
