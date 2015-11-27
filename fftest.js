@@ -74,7 +74,7 @@ app.get('/cutpoint', function (req,res)
 		try {
 			revision = Number(fs.readFileSync(revisionFile, "utf8"));
 		} catch(err) {
-			console.err("No revision file");
+			console.log("No revision file");
 		}
 		revision = revision + 1;
 		fs.writeFileSync(revisionFile, revision);
